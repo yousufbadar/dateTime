@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello jQuery</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://momentjs.com/downloads/moment.js"></script>
+		<script language="javascript">
+		
+		$(document).ready(function() {
+			var now 	= moment().format("YYYY-MM-DD hh:mm A");
+			var today 	= moment().format("YYYY-MM-DD");
+			var tomoro 	= moment().add(1, 'days').format("YYYY-MM-DD");
+			var after2days = moment().add(2, 'days').format("YYYY-MM-DD");
+			
+			function getDateTime(time){
+				var goodTime = moment().format("YYYY-MM-DD")+ ' ' +time;
+
+				if(moment(goodTime).isBefore(now)){
+					return tomoro+' ' +time;
+				}
+				return goodTime;
+			}
+			
+			function nowBetwTimes(start, end){
+
+				return moment(start).isBefore(now) && moment(end).isAfter(now);
+			}
+			$.ajax({
+				url: 'https://raleighmasjid.org/API/prayer/?date='+moment().format("YYYY-MM-DD")
+			}).then(function(data) {
+				
+				
+			   $('.all').append( 
+				   '<br>' 
+				   + '<br> ' + getDateTime(data.adhan.Fajr) + '  :::: ' +   getDateTime(data.iqamah.Fajr)
+				   + '<br> --*****--- <br>' + getDateTime(data.adhan.Dhuhr) + '  :::: ' +   getDateTime(data.iqamah.Dhuhr)
+				   + '<br> --*****---<br>' + getDateTime(data.adhan.Asr) + '  :::: ' +   getDateTime(data.iqamah.Asr)
+				   + '<br> --*****---<br>' + getDateTime(data.adhan.Maghrib) + '  :::: '   + getDateTime(data.iqamah.Maghrib)
+				   + '<br> --*****---<br>' + getDateTime(data.adhan.Isha) + '  :::: ' +   getDateTime(data.iqamah.Isha)
+				   );
+				   $('.fajr').append(getDateTime(data.iqamah.Fajr))
+				   $('.now').append(now + '    ' + nowBetwTimes(getDateTime(data.adhan.Dhuhr),getDateTime(data.iqamah.Dhuhr)));
+				});
+			});		
+		
+		</script>
+		
+    </head>
+
+    <body>
+        <div>
+			<p class="all">all times are : </p>
+            <p class="fajr">Fajr is at </p>
+            <p class="now">The current time is </p>
+        </div>
+		
+    </body>
+</html>
