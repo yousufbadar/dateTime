@@ -33,13 +33,13 @@
 			   $('.all').append( 
 				   '<br>' 
 				   + '<br> ' + getDateTime(data.adhan.Fajr) + '  :::: ' +   getDateTime(data.iqamah.Fajr)
-				   + '<br> --*****--- <br>' + getDateTime(data.adhan.Dhuhr) + '  :::: ' +   getDateTime(data.iqamah.Dhuhr)
-				   + '<br> --*****---<br>' + getDateTime(data.adhan.Asr) + '  :::: ' +   getDateTime(data.iqamah.Asr)
-				   + '<br> --*****---<br>' + getDateTime(data.adhan.Maghrib) + '  :::: '   + getDateTime(data.iqamah.Maghrib)
-				   + '<br> --*****---<br>' + getDateTime(data.adhan.Isha) + '  :::: ' +   getDateTime(data.iqamah.Isha)
+				   + '<br>  <br>' + getDateTime(data.adhan.Dhuhr) + '  :::: ' +   getDateTime(data.iqamah.Dhuhr)
+				   + '<br> <br>' + getDateTime(data.adhan.Asr) + '  :::: ' +   getDateTime(data.iqamah.Asr)
+				   + '<br> <br>' + getDateTime(data.adhan.Maghrib) + '  :::: '   + getDateTime(data.iqamah.Maghrib)
+				   + '<br> <br>' + getDateTime(data.adhan.Isha) + '  :::: ' +   getDateTime(data.iqamah.Isha)
 				   );
 				   $('.fajr').append(getDateTime(data.iqamah.Fajr))
-				   $('.now').append(now + '    ' + nowBetwTimes(getDateTime(data.adhan.Dhuhr),getDateTime(data.iqamah.Dhuhr)));
+				   $('.now').append(now + '    ' + nowBetwTimes(getDateTime(data.adhan.Isha),getDateTime(data.iqamah.Isha)));
 				});
 			});		
 		
