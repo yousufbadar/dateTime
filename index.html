@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hello jQuery</title>
+        <title>Time To Salaah</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://momentjs.com/downloads/moment.js"></script>
 		<script language="javascript">
 		
 		$(document).ready(function() {
+			//var now 	= moment("2019-09-12 7:39 PM").format("YYYY-MM-DD hh:mm A");
 			var now 	= moment().format("YYYY-MM-DD hh:mm A");
 			var today 	= moment().format("YYYY-MM-DD");
 			var tomoro 	= moment().add(1, 'days').format("YYYY-MM-DD");
 			var after2days = moment().add(2, 'days').format("YYYY-MM-DD");
 			
-			function getDateTime(time){
-				var goodTime = moment().format("YYYY-MM-DD")+ ' ' +time;
+			$('.now').append(" "  + moment().format("DD-MM-YYYY hh:mm A"));
+			function getStartAndEndTimes(adhan, iqamah){
+				var iqamahDateTime = moment().format("YYYY-MM-DD")+ ' ' +iqamah;
+				var adhanDateTime = "";
 
-				if(moment(goodTime).isBefore(now)){
-					return tomoro+' ' +time;
+				if(moment(iqamahDateTime).isBefore(now)){
+					 adhanDateTime = tomoro+ ' ' +adhan;
+					//$('.all').append( "<br>" + adhanDateTime + "-------------" +tomoro+' ' +iqamah + "<br>");
 				}
-				return goodTime;
+				else if(moment(iqamahDateTime).isAfter(now)){
+					 adhanDateTime = moment().format("YYYY-MM-DD")+ ' ' +adhan;
+					//$('.all').append( "<br>" + adhanDateTime + "-------------" + iqamahDateTime+ "<br>");
+				}
+				
+				if(nowBetwTimes(adhanDateTime,iqamahDateTime)){
+
+					// get the difference between the moments
+					const diff = moment(iqamahDateTime).diff(now);
+					//express as a duration
+					const diffDuration = moment.duration(diff);
+
+					$('.time2Salah').append("Minutes to Salaah: ", diffDuration.minutes());
+
+				} else if(true) {
+				//	$('.all').append( "<br>" + adhanDateTime + "-------------" + iqamahDateTime+ "<br>");
+					
+				}
+
+
+				
 			}
 			
 			function nowBetwTimes(start, end){
@@ -29,17 +53,14 @@
 				url: 'https://raleighmasjid.org/API/prayer/?date='+moment().format("YYYY-MM-DD")
 			}).then(function(data) {
 				
-				
-			   $('.all').append( 
-				   '<br>' 
-				   + '<br> ' + getDateTime(data.adhan.Fajr) + '  :::: ' +   getDateTime(data.iqamah.Fajr)
-				   + '<br>  <br>' + getDateTime(data.adhan.Dhuhr) + '  :::: ' +   getDateTime(data.iqamah.Dhuhr)
-				   + '<br> <br>' + getDateTime(data.adhan.Asr) + '  :::: ' +   getDateTime(data.iqamah.Asr)
-				   + '<br> <br>' + getDateTime(data.adhan.Maghrib) + '  :::: '   + getDateTime(data.iqamah.Maghrib)
-				   + '<br> <br>' + getDateTime(data.adhan.Isha) + '  :::: ' +   getDateTime(data.iqamah.Isha)
-				   );
-				   $('.fajr').append(getDateTime(data.iqamah.Fajr))
-				   $('.now').append(now + '    ' + nowBetwTimes(getDateTime(data.adhan.Isha),getDateTime(data.iqamah.Isha)));
+				  getStartAndEndTimes(data.adhan.Fajr, data.iqamah.Fajr);
+				  getStartAndEndTimes(data.adhan.Dhuhr, data.iqamah.Dhuhr);
+				  getStartAndEndTimes(data.adhan.Asr, data.iqamah.Asr);
+				  getStartAndEndTimes(data.adhan.Maghrib, data.iqamah.Maghrib);
+				  getStartAndEndTimes(data.adhan.Isha, data.iqamah.Isha);
+				   
+				  
+				   
 				});
 			});		
 		
@@ -49,9 +70,10 @@
 
     <body>
         <div>
-			<p class="all">all times are : </p>
-            <p class="fajr">Fajr is at </p>
-            <p class="now">The current time is </p>
+			<h2 class="now">The current time is  </h2>
+
+            <h2 class="time2Salah"></h2>
+            
         </div>
 		
     </body>
