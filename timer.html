@@ -5,9 +5,8 @@
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="https://cdn.rawgit.com/mckamey/countdownjs/master/countdown.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-//var now = moment(); // new Date().getTime();
-var now 	= moment("2019-09-14 8:39 PM").format("YYYY-MM-DD hh:mm A");
-     // var now 	= moment().format("YYYY-MM-DD hh:mm A");
+//var now 	= moment("2019-09-14 8:39 PM").format("YYYY-MM-DD hh:mm A");
+var now 	= moment().format("YYYY-MM-DD hh:mm A");
 var then = moment().add(60, 'seconds'); // new Date(now + 60 * 1000);
 
 $.ajax({
