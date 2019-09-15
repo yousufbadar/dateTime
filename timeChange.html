@@ -16,47 +16,57 @@ $.ajax({
     url: 'https://raleighmasjid.org/API/prayer/?date='+moment().format("YYYY-MM-DD")
 }).then(function(data0) {
     todaysTimes = data0.iqamah;
-    console.log(todaysTimes);
-});
-$.ajax({
-    url: 'https://raleighmasjid.org/API/prayer/?date='+after1days
-}).then(function(data1) {
-    dayOneTimes = data1.iqamah;
-    console.log(dayOneTimes);
-});
-$.ajax({
-    url: 'https://raleighmasjid.org/API/prayer/?date='+after2days
-}).then(function(data2) {
-    dayTwoTimes = data2.iqamah;
-    console.log(dayTwoTimes);
-    changesInDays(todaysTimes,dayTwoTimes);
+        $.ajax({
+        url: 'https://raleighmasjid.org/API/prayer/?date='+after1days
+        }).then(function(data1) {
+            dayOneTimes = data1.iqamah;
+            $.ajax({
+                url: 'https://raleighmasjid.org/API/prayer/?date='+after2days
+                }).then(function(data2) {
+                    dayTwoTimes = data2.iqamah;
+                    changesInDays();
+                });
+        });
 });
 
-    var times  = "Time changes In 2 days ";
-function changesInDays(today, dayAftertomorrow){
-    
-    if(today.Fajr != dayAftertomorrow.Fajr){
-        times += " Fajr";
-        console.log("Fajr Changes in 2 days" + dayAftertomorrow.Fajr);
+
+    var times  = "Time changes for ";
+    var inDays = "";
+function changesInDays(){
+    console.log(todaysTimes, dayOneTimes, dayTwoTimes)
+    // ********** FAJR **********
+    if(todaysTimes.Fajr != dayOneTimes.Fajr){
+        times += " Fajr["+dayOneTimes.Fajr+"]";
+        inDays = " tomorrow ";
+        console.log("Fajr Changes in tomorrow :" + dayOneTimes.Fajr);
+    } else if(todaysTimes.Fajr != dayTwoTimes.Fajr){
+        times += " Fajr["+dayTwoTimes.Fajr+"]";
+        inDays = "in 2 days ";
+        console.log("Fajr Changes in 2 days :" + dayTwoTimes.Fajr);
     }
-    if(today.Dhuhr != dayAftertomorrow.Dhuhr){
-        times += " Dhuhr"
-        console.log("Dhuhr Changes in 2 days" + dayAftertomorrow.Dhuhr);
+    // ********** ASR **********
+    if(todaysTimes.Asr != dayOneTimes.Asr){
+        times += " Asr ["+dayOneTimes.Asr+"]";
+        inDays = " tomorrow ";
+        console.log("Asr Changes in tomorrow :" + dayOneTimes.Asr);
+    } else if(todaysTimes.Asr != dayTwoTimes.Asr){
+        times += " Asr ["+dayTwoTimes.Asr+"]";
+        inDays = "in 2 days ";
+        console.log("Asr Changes in 2 days :" + dayTwoTimes.Asr);
     }
-    if(today.Asr != dayAftertomorrow.Asr){
-        times += " Asr ["+dayAftertomorrow.Asr+"]";
-        console.log("Asr Changes in 2 days" + dayAftertomorrow.Asr);
+    // ********** ISHA **********
+    if(todaysTimes.Isha != dayOneTimes.Isha){
+        times += " Isha ["+dayOneTimes.Isha+"]";
+        inDays = " tomorrow ";
+        console.log("Isha Changes in tomorrow :" + dayOneTimes.Isha);
+    } else     if(todaysTimes.Isha != dayTwoTimes.Isha){
+        times += " Isha ["+dayTwoTimes.Isha+"]";
+        inDays = "in 2 days ";
+        console.log("Isha Changes in 2 days :" + dayTwoTimes.Isha);
     }
-    if(today.Maghrib != dayAftertomorrow.Maghrib){
-        times += " Maghrib ["+dayAftertomorrow.Asr+"]";
-        console.log("Maghrib Changes in 2 days" + dayAftertomorrow.Maghrib);
-    }
-    if(today.Isha != dayAftertomorrow.Isha){
-        times += " Isha ["+dayAftertomorrow.Isha+"]";
-        console.log("Isha Changes in 2 days" + dayAftertomorrow.Isha);
-    }
-    $(".timeChange").text(times);
-    console.log(times);
+
+    $(".timeChange").text(times + inDays);
+    console.log(times +  inDays);
 
 }      
 </script>
