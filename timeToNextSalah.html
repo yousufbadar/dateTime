@@ -1,0 +1,86 @@
+
+
+<script src="https://code.jquery.com/jquery-3.0.0.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" type="text/javascript"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="https://cdn.rawgit.com/mckamey/countdownjs/master/countdown.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+//var now 	= moment("2019-09-14 8:39 PM").format("YYYY-MM-DD hh:mm A");
+var now 	= moment().format("YYYY-MM-DD hh:mm A");
+var then = moment().add(60, 'seconds'); // new Date(now + 60 * 1000);
+
+$.ajax({
+				url: 'https://raleighmasjid.org/API/prayer/?date='+moment().format("YYYY-MM-DD")
+			}).then(function(data) {
+			var today 	= moment().format("YYYY-MM-DD");
+			
+			var after2days = moment().add(2, 'days').format("YYYY-MM-DD");
+			
+			//$('.now').append(" "  + moment().format("DD-MM-YYYY hh:mm A"));
+			console.log("Time is "+now);
+			getStartAndEndTimes(data.adhan.Fajr, data.iqamah.Fajr, data.iqamah.Isha);
+			getStartAndEndTimes(data.adhan.Dhuhr, data.iqamah.Dhuhr, data.iqamah.Fajr);
+			getStartAndEndTimes(data.adhan.Asr, data.iqamah.Asr, data.iqamah.Dhuhr);
+			getStartAndEndTimes(data.adhan.Maghrib, data.iqamah.Maghrib, data.iqamah.Asr);
+			getStartAndEndTimes(data.adhan.Isha, data.iqamah.Isha, data.iqamah.Maghrib);
+      
+
+      });
+      
+function getStartAndEndTimes(adhan, iqamah, previous){
+	var tomoro 	= moment().add(1, 'days').format("YYYY-MM-DD");
+				var iqamahDateTime = moment().format("YYYY-MM-DD")+ ' ' +iqamah;
+				var adhanDateTime = "";
+                 
+
+				if(moment(iqamahDateTime).isBefore(now)){
+                    if(iqamahDateTime.indexOf("AM")>1){
+                        previous = moment().format("YYYY-MM-DD") + ' ' + previous;
+                    } else if(iqamahDateTime.indexOf("PM")>1){
+                        previous = moment().add(1, 'days').format("YYYY-MM-DD")+ ' ' + previous;
+                    }
+				 adhanDateTime = tomoro+ ' ' +adhan;
+                 iqamahDateTime = tomoro+ ' ' +iqamah;
+				}
+				else if(moment(iqamahDateTime).isAfter(now)){
+					 adhanDateTime = moment().format("YYYY-MM-DD")+ ' ' +adhan;
+				}
+				console.log("adhaan : " + adhanDateTime + " iqamah : "+ iqamahDateTime + " previous : " + previous);
+				if(nowBetwTimes(previous,iqamahDateTime)){
+					// get the difference between the moments
+                    console.log(" PREVIOUS : "+ previous);
+                    console.log(" iqamahDateTime : "+ iqamahDateTime);
+					const diff = moment(iqamahDateTime).diff(now);
+					//express as a duration
+					const diffDuration = moment.duration(diff);
+                    console.log(diffDuration.hours()*60 + diffDuration.minutes());
+          			then = moment().add(60*(diffDuration.hours()*60 + diffDuration.minutes()), 'seconds');
+					$('.time2Salah').append("Minutes to Salaah: ", diffDuration.minutes());
+				} else if(true) {
+					//$('.all').append( "<br>" + adhanDateTime + "-------------" + iqamahDateTime+ "<br>");
+					
+				}
+  		}
+
+		function nowBetwTimes(start, end){
+      return moment(start).isBefore(now) && moment(end).isAfter(now);
+    }
+
+$(".now").text(moment(now).format('h:mm:ss a'));
+$(".then").text(moment(then).format('h:mm:ss a'));
+$(".duration").text(moment(now).to(then));
+
+(function timerLoop() {
+  $(".difference").text(moment().to(then));
+  $(".time2Salah").text(countdown(then).toString());
+  requestAnimationFrame(timerLoop);
+
+
+
+
+})();
+</script>
+
+<h1>Time to Salah</h1>
+<div class="time2Salah"></div>
+
