@@ -5,68 +5,80 @@
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="https://cdn.rawgit.com/mckamey/countdownjs/master/countdown.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-var after1days = moment().add(1, 'days').format("YYYY-MM-DD");
-var after2days = moment().add(2, 'days').format("YYYY-MM-DD");
+var today = moment("2019-10-01").format("YYYY-MM-DD");
+var after1day = moment("2019-10-01").add(1, 'days').format("YYYY-MM-DD");
+var after2days = moment("2019-10-01").add(2, 'days').format("YYYY-MM-DD");
+var yesterday = moment("2019-10-01").add(-1, 'days').format("YYYY-MM-DD");
 
 var todaysTimes = {};
 var dayOneTimes ={};
 var dayTwoTimes = {};
+var ydayTimes = {};
 
 $.ajax({
-    url: 'https://raleighmasjid.org/API/prayer/?date='+moment().format("YYYY-MM-DD")
+    url: 'https://raleighmasjid.org/API/prayer/?date='+today
 }).then(function(data0) {
     todaysTimes = data0.iqamah;
         $.ajax({
-        url: 'https://raleighmasjid.org/API/prayer/?date='+after1days
+        url: 'https://raleighmasjid.org/API/prayer/?date='+after1day
         }).then(function(data1) {
             dayOneTimes = data1.iqamah;
             $.ajax({
                 url: 'https://raleighmasjid.org/API/prayer/?date='+after2days
                 }).then(function(data2) {
                     dayTwoTimes = data2.iqamah;
-                    changesInDays();
+                    $.ajax({
+                        url: 'https://raleighmasjid.org/API/prayer/?date='+after2days
+                        }).then(function(data3) {
+                            ydayTimes = data3.iqamah;
+                            changesInDays();
+                        });
                 });
         });
 });
 
 
-    var times  = "Time changes for ";
+    var times  = "Time changes ";
+    var salahs = "";
     var inDays = "";
 function changesInDays(){
-    console.log(todaysTimes, dayOneTimes, dayTwoTimes)
+    console.log(todaysTimes, dayOneTimes, dayTwoTimes, ydayTimes)
     // ********** FAJR **********
     if(todaysTimes.Fajr != dayOneTimes.Fajr){
-        times += " Fajr["+dayOneTimes.Fajr+"]";
+        salahs += " Fajr["+dayOneTimes.Fajr+"]";
         inDays = " tomorrow ";
-        console.log("Fajr Changes in tomorrow :" + dayOneTimes.Fajr);
+        //console.log("Fajr Changes in tomorrow :" + dayOneTimes.Fajr);
     } else if(todaysTimes.Fajr != dayTwoTimes.Fajr){
-        times += " Fajr["+dayTwoTimes.Fajr+"]";
+        salahs += " Fajr["+dayTwoTimes.Fajr+"]";
         inDays = "in 2 days ";
-        console.log("Fajr Changes in 2 days :" + dayTwoTimes.Fajr);
+        //console.log("Fajr Changes in 2 days :" + dayTwoTimes.Fajr);
     }
     // ********** ASR **********
     if(todaysTimes.Asr != dayOneTimes.Asr){
-        times += " Asr ["+dayOneTimes.Asr+"]";
+        salahs += " Asr ["+dayOneTimes.Asr+"]";
         inDays = " tomorrow ";
-        console.log("Asr Changes in tomorrow :" + dayOneTimes.Asr);
+        //console.log("Asr Changes in tomorrow :" + dayOneTimes.Asr);
     } else if(todaysTimes.Asr != dayTwoTimes.Asr){
-        times += " Asr ["+dayTwoTimes.Asr+"]";
+        salahs += " Asr ["+dayTwoTimes.Asr+"]";
         inDays = "in 2 days ";
-        console.log("Asr Changes in 2 days :" + dayTwoTimes.Asr);
+        //console.log("Asr Changes in 2 days :" + dayTwoTimes.Asr);
     }
     // ********** ISHA **********
     if(todaysTimes.Isha != dayOneTimes.Isha){
-        times += " Isha ["+dayOneTimes.Isha+"]";
+        salahs += " Isha ["+dayOneTimes.Isha+"]";
         inDays = " tomorrow ";
-        console.log("Isha Changes in tomorrow :" + dayOneTimes.Isha);
+        //console.log("Isha Changes in tomorrow :" + dayOneTimes.Isha);
     } else     if(todaysTimes.Isha != dayTwoTimes.Isha){
-        times += " Isha ["+dayTwoTimes.Isha+"]";
+        salahs += " Isha ["+dayTwoTimes.Isha+"]";
         inDays = "in 2 days ";
-        console.log("Isha Changes in 2 days :" + dayTwoTimes.Isha);
+        //console.log("Isha Changes in 2 days :" + dayTwoTimes.Isha);
     }
 
-    $(".timeChange").text(times + inDays);
-    console.log(times +  inDays);
+    $(".timeChange").text(times + inDays + " for " );
+    $(".timeChange").append("<br><br>");
+    $(".timeChange").append("<font color=red>"+salahs+"</font>");
+
+    //console.log(times +  inDays);
 
 }      
 </script>
